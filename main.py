@@ -36,8 +36,6 @@ def get_specifics(s):
     return f"<specifics tbi {len(s)}>"
     pass
 
-
-
 def ops(line):
     line = line[line.find(' ') + 1:]
     # strip all the shit within brackets
@@ -45,11 +43,8 @@ def ops(line):
     line = line.replace('\n', '')
     return line
 
-
-
-
-
 def convert_to_csv(file, window=5):
+    tokens = 0
     f = open(file)
 
     therapist = []
@@ -66,7 +61,8 @@ def convert_to_csv(file, window=5):
         elif line[0] == cchar:
             client.append(ops(line))
         else:
-            print('EOF\n')
+            pass
+            #print('EOF\n')
 
     therapist = therapist[1:]
 
@@ -89,12 +85,17 @@ def convert_to_csv(file, window=5):
         completion = ' ' + therapist[i] + "<end>"
 
         j = {"prompt": prompt.to_string(), "completion": completion}
-        print(f'[{i}]: Made JSON: {json.dumps(j)}')
+
         w.write(json.dumps(j) + '\n')
+        tokens += 4*len(json.dumps(j).split(' '))/3
 
         conv.append("Therapist: " + therapist[i])
 
+    return tokens
 
-file_data = {'gloria.txt': ['T','C'], 'sylvia.txt': ['C','S']}
+
+file_data = {'gloria.txt': ['T','C'], 'sylvia.txt': ['C','S'], 'sylvia2.txt':['C','S'],'kathy.txt':['T','C'], 'dione.txt':['T','C'], 'dione2.txt':['T','C']}
 for file,data in file_data.items():
-    convert_to_csv(file)
+    for w in [1,2,3,4,5]:
+        t = convert_to_csv(file,w)
+        print(f"file: {file}, w:{w}, tokens: {t:.2f}, cost: ${(0.02*t/1000):.2f}")
