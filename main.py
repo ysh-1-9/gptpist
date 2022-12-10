@@ -23,18 +23,17 @@ class Prompt:
 
 
 # final dataset will be list of jsons, each json with one prompt, one completion
-# isko csv mein daalke cli data-prep tool ko de denge
+# isko jsonl mein daalenge
 
 
 def get_summary(s):
-    # takes in the last
+    # chotu call to get summary
     return f"<summary tbi {len(s)}>"
-    pass
 
 
 def get_specifics(s):
+    # chotu call to get specifics
     return f"<specifics tbi {len(s)}>"
-    pass
 
 def ops(line):
     line = line[line.find(' ') + 1:]
@@ -43,7 +42,7 @@ def ops(line):
     line = line.replace('\n', '')
     return line
 
-def convert_to_csv(file, window=5):
+def txt_to_jsonl(file, window=5):
     tokens = 0
     f = open(file)
 
@@ -97,5 +96,5 @@ def convert_to_csv(file, window=5):
 file_data = {'gloria.txt': ['T','C'], 'sylvia.txt': ['C','S'], 'sylvia2.txt':['C','S'],'kathy.txt':['T','C'], 'dione.txt':['T','C'], 'dione2.txt':['T','C']}
 for file,data in file_data.items():
     for w in [1,2,3,4,5]:
-        t = convert_to_csv(file,w)
+        t = txt_to_jsonl(file, w)
         print(f"file: {file}, w:{w}, tokens: {t:.2f}, cost: ${(0.02*t/1000):.2f}")
