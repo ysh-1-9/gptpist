@@ -37,38 +37,16 @@ def get_specifics(s):
     pass
 
 
-'''
-{p:"
-    summary:
-    specifics: 
-    client1: good morning
-    t1: 
-    "
- ,c: "Won't you have a chair? Now..."
- }
- 
- {
- p:"
-    summary: client has introduced themselves
-    client1: good morning
-    t1: Won't you have a chair? Now...
-    c2: Well, right now I'm nervous...
-    t2: 
-
-json has 2 fields - prompt and completion
-
-1. prompt - 
-    a. Summary - 
-
-'''
-
 
 def ops(line):
     line = line[line.find(' ') + 1:]
     # strip all the shit within brackets
     line = re.sub("[\(\[].*?[\)\]]", "", line)
-    line = line.replace('\n','')
+    line = line.replace('\n', '')
     return line
+
+
+
 
 
 def convert_to_csv(file, window=5):
@@ -79,10 +57,13 @@ def convert_to_csv(file, window=5):
 
     w = open(file.split('.')[0] + '_proc.jsonl', 'w')
 
+    tchar = file_data[file][0]
+    cchar = file_data[file][1]
+
     for line in f:
-        if line[0] == 'T':
+        if line[0] == tchar:
             therapist.append(ops(line))
-        elif line[0] == 'C':
+        elif line[0] == cchar:
             client.append(ops(line))
         else:
             print('EOF\n')
@@ -105,7 +86,7 @@ def convert_to_csv(file, window=5):
         prompt.clientMessages = prompt.clientMessages[1:] + [client[i]]
         prompt.therapistMessages = prompt.therapistMessages[1:-1] + [therapist[i - 1] if i > 0 else ""] + [""]
 
-        completion = ' '+therapist[i]+"<end>"
+        completion = ' ' + therapist[i] + "<end>"
 
         j = {"prompt": prompt.to_string(), "completion": completion}
         print(f'[{i}]: Made JSON: {json.dumps(j)}')
@@ -114,4 +95,6 @@ def convert_to_csv(file, window=5):
         conv.append("Therapist: " + therapist[i])
 
 
-convert_to_csv('gloria.txt')
+file_data = {'gloria.txt': ['T','C'], 'sylvia.txt': ['C','S']}
+for file,data in file_data.items():
+    convert_to_csv(file)
