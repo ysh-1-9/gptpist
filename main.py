@@ -97,4 +97,4 @@ file_data = {'gloria.txt': ['T','C'], 'sylvia.txt': ['C','S'], 'sylvia2.txt':['C
 for file,data in file_data.items():
     for w in [1,2,3,4,5]:
         t = txt_to_jsonl(file, w)
-        print(f"file: {file}, w:{w}, tokens: {t:.2f}, cost: ${(0.02*t/1000):.2f}")
+        print(f"file: {file}, w:{w}, tokens: {t:.2f}, cost: ${(0.03*t/1000):.2f}")
